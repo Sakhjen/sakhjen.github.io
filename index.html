@@ -3,133 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telegram Mini App</title>
+    <title>Кликер</title>
     <style>
         body {
-            margin: 0;
-            padding: 0;
             font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f0f0f0;
+            text-align: center;
+            margin-top: 50px;
         }
-        .app-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .status-bars {
-            margin-bottom: 20px;
-            width: 200px;
-        }
-        .status-bar {
-            margin: 5px 0;
-            height: 20px;
-            background-color: #ddd;
-            border-radius: 10px;
-            overflow: hidden;
-            position: relative;
-        }
-        .status-bar div {
-            height: 100%;
-            border-radius: 10px;
-        }
-        .health { background-color: #ff5c5c; }
-        .hunger { background-color: #ffc107; }
-        .fatigue { background-color: #5c85ff; }
-        .circle {
-            width: 150px;
-            height: 150px;
-            background-color: #ccc;
-            border-radius: 50%;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 24px;
-            font-weight: bold;
-            color: #333;
-        }
-        .buttons {
-            display: flex;
-            justify-content: space-between;
+        .face {
+            margin: 20px auto;
             width: 300px;
+            height: 300px;
+            background: url('static/bodka.jpg') no-repeat center;
+            background-size: cover;
+        }
+        .health-bar {
+            width: 300px;
+            background-color: grey;
+            border: 1px solid black;
+            margin: 10px auto;
+        }
+        .health {
+            height: 30px;
+            background-color: green;
         }
         button {
+            margin: 10px;
+            padding: 10px 20px;
+        }
+        #log {
+            width: 60%;
+            margin: 20px auto;
             padding: 10px;
-            border: none;
-            background-color: #007bff;
-            color: white;
-            border-radius: 5px;
-            cursor: pointer;
+            border: 1px solid black;
+            max-height: 200px;
+            overflow-y: scroll;
+            text-align: left;
+        }
+        /* Скрытие текста со здоровьем */
+        #health-text {
+            visibility: hidden;
         }
     </style>
 </head>
 <body>
 
-<div class="app-container">
-    <div class="status-bars">
-        <div class="status-bar">
-            <div class="health" style="width: 100%"></div>
-        </div>
-        <div class="status-bar">
-            <div class="hunger" style="width: 100%"></div>
-        </div>
-        <div class="status-bar">
-            <div class="fatigue" style="width: 100%"></div>
-        </div>
-    </div>
-
-    <div class="circle">Питомец</div>
-
-    <div class="buttons">
-        <button id="feedBtn">Покормить</button>
-        <button id="healBtn">Лечить</button>
-        <button id="sleepBtn">Уложить спать</button>
-    </div>
+<h1>Деньги: <span id="money">0</span> рублей</h1>
+<div class="health-bar">
+    <div id="health" class="health" style="width: 75%;"></div>
 </div>
+<p id="health-text">Здоровье: <span id="health-text">3/4</span></p>
+
+<div class="face"></div>
+
+<button onclick="goToWork()">Пойти на работу</button>
+<button onclick="writeTrack()">Писать трек</button>
+<button onclick="getStone()">Метнуться за камнем</button>
+<button onclick="goToBath()">Сходить в баню</button>
+
+<div id="log"></div>
 
 <script>
-    let health = 100;
-    let hunger = 100;
-    let fatigue = 100;
+    let money = 0;
+    let health = 0.75;
+    let trackClicks = 0;
 
-    const healthBar = document.querySelector('.health');
-    const hungerBar = document.querySelector('.hunger');
-    const fatigueBar = document.querySelector('.fatigue');
+    function updateUI() {
+        document.getElementById('money').textContent = money;
+        document.getElementById('health').style.width = (health * 100) + "%";
+        document.getElementById('health-text').textContent = Math.round(health * 4) + "/4";
 
-    function updateBars() {
-        healthBar.style.width = health + '%';
-        hungerBar.style.width = hunger + '%';
-        fatigueBar.style.width = fatigue + '%';
+        if (money >= 1000000000)
+
+        // Если здоровье закончилось
+        if (health <= 0) {
+            addToLog("Ты умер");
+            disableButtons();
+        }
     }
 
-    document.getElementById('feedBtn').addEventListener('click', () => {
-        hunger = Math.min(hunger + 20, 100);
-        updateBars();
-    });
+    function disableButtons() {
+        const buttons = document.querySelectorAll("button");
+        buttons.forEach(button => button.disabled = true);
+    }
 
-    document.getElementById('healBtn').addEventListener('click', () => {
-        health = Math.min(health + 20, 100);
-        updateBars();
-    });
+    function addToLog(message) {
+        const logDiv = document.getElementById("log");
+        const newLogEntry = document.createElement("p");
+        newLogEntry.textContent = message;
+        logDiv.appendChild(newLogEntry);
+        logDiv.scrollTop = logDiv.scrollHeight; // Автопрокрутка вниз
+    }
 
-    document.getElementById('sleepBtn').addEventListener('click', () => {
-        fatigue = Math.min(fatigue + 20, 100);
-        updateBars();
-    });
+    function goToWork() {
+        // Увеличиваем деньги на 1000
+        money += 1000;
 
-    // Симуляция уменьшения показателей
-    setInterval(() => {
-        hunger = Math.max(hunger - 5, 0);
-        fatigue = Math.max(fatigue - 5, 0);
-        health = Math.max(health - 5, 0);
-        updateBars();
-    }, 5000);
+        // Уменьшаем здоровье на 5%
+        health -= 0.05;
 
-    updateBars();
+        addToLog("Ты пошел на работу и заработал 1000 рублей.");
+
+        // 1% шанс упасть с многоэтажки
+        if (Math.random() < 0.01) {
+            health = 0;
+            addToLog("Ты упал с многоэтажки");
+        }
+
+        updateUI();
+    }
+
+    function writeTrack() {
+        trackClicks++;
+
+        if (trackClicks >= 1000) {
+            money += 1000000000; // 1 миллиард за 1000 кликов
+            trackClicks = 0;
+            addToLog("Ты написал хитовый трек и заработал 1 миллиард рублей!");
+        } else {
+            addToLog(`Ты пишешь трек...`);
+        }
+
+        updateUI();
+    }
+
+    function getStone() {
+        if (money >= 3000) {
+            money -= 3000; // Уменьшаем деньги на 3000
+            health -= 0.15; // Уменьшаем здоровье на 15%
+            addToLog("Ты метнулся за камнем: потерял 3000 рублей и 15% здоровья.");
+        } else {
+            addToLog("Недостаточно денег, чтобы метнуться за камнем.");
+        }
+        updateUI();
+    }
+
+    function goToBath() {
+        if (money >= 3000) {
+            money -= 3000; // Уменьшаем деньги на 3000
+            health = Math.min(1, health + 0.20); // Увеличиваем здоровье на 20%, но не больше 1
+            addToLog("Ты сходил в баню и восстановил 20% здоровья.");
+        } else {
+            addToLog("Недостаточно денег, чтобы сходить в баню.");
+        }
+        updateUI();
+    }
+
+    updateUI();
 </script>
 
 </body>
