@@ -1,9 +1,14 @@
 from telegram import Update, WebAppInfo, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler
+import time
 
 async def start(update: Update, context):
+    # Генерируем уникальный параметр для предотвращения кэширования
+    timestamp = int(time.time())
+    web_app_url = f"https://sakhjen.github.io/?t={timestamp}"
+
     # Создаем кнопку с WebAppInfo
-    button = InlineKeyboardButton(text="Открыть", web_app=WebAppInfo(url="https://sakhjen.github.io/"))
+    button = InlineKeyboardButton(text="Открыть", web_app=WebAppInfo(url=web_app_url))
     
     # Создаем клавиатуру с кнопкой
     keyboard = InlineKeyboardMarkup([[button]])
