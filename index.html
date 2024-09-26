@@ -100,12 +100,18 @@
     function updateUI() {
         document.getElementById('money').textContent = money;
         document.getElementById('health').style.width = (health * 100) + "%";
-        document.getElementById('health-text').textContent = Math.round(health * 4) + "/4";
+        document.getElementById('health-text').textContent = health;
 
-        if (money >= 1000000000)
+        console.log(health);
+
+        if(money>1000000000) {
+            addToLog("Ты миллиардер!");
+            disableButtons();
+        }
 
         // Если здоровье закончилось
         if (health <= 0) {
+            console.log("Мы умерли");
             addToLog("Ты умер");
             disableButtons();
         }
