@@ -1,8 +1,136 @@
-<html>
-    <head>
-        <title>Hello world!</title>
-    </head>
-    <body>
-        Hello world!
-    </body>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Mini App</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .status-bars {
+            margin-bottom: 20px;
+            width: 200px;
+        }
+        .status-bar {
+            margin: 5px 0;
+            height: 20px;
+            background-color: #ddd;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+        .status-bar div {
+            height: 100%;
+            border-radius: 10px;
+        }
+        .health { background-color: #ff5c5c; }
+        .hunger { background-color: #ffc107; }
+        .fatigue { background-color: #5c85ff; }
+        .circle {
+            width: 150px;
+            height: 150px;
+            background-color: #ccc;
+            border-radius: 50%;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            width: 300px;
+        }
+        button {
+            padding: 10px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="status-bars">
+        <div class="status-bar">
+            <div class="health" style="width: 100%"></div>
+        </div>
+        <div class="status-bar">
+            <div class="hunger" style="width: 100%"></div>
+        </div>
+        <div class="status-bar">
+            <div class="fatigue" style="width: 100%"></div>
+        </div>
+    </div>
+
+    <div class="circle">Питомец</div>
+
+    <div class="buttons">
+        <button id="feedBtn">Покормить</button>
+        <button id="healBtn">Лечить</button>
+        <button id="sleepBtn">Уложить спать</button>
+    </div>
+</div>
+
+<script>
+    let health = 100;
+    let hunger = 100;
+    let fatigue = 100;
+
+    const healthBar = document.querySelector('.health');
+    const hungerBar = document.querySelector('.hunger');
+    const fatigueBar = document.querySelector('.fatigue');
+
+    function updateBars() {
+        healthBar.style.width = health + '%';
+        hungerBar.style.width = hunger + '%';
+        fatigueBar.style.width = fatigue + '%';
+    }
+
+    document.getElementById('feedBtn').addEventListener('click', () => {
+        hunger = Math.min(hunger + 20, 100);
+        updateBars();
+    });
+
+    document.getElementById('healBtn').addEventListener('click', () => {
+        health = Math.min(health + 20, 100);
+        updateBars();
+    });
+
+    document.getElementById('sleepBtn').addEventListener('click', () => {
+        fatigue = Math.min(fatigue + 20, 100);
+        updateBars();
+    });
+
+    // Симуляция уменьшения показателей
+    setInterval(() => {
+        hunger = Math.max(hunger - 5, 0);
+        fatigue = Math.max(fatigue - 5, 0);
+        health = Math.max(health - 5, 0);
+        updateBars();
+    }, 5000);
+
+    updateBars();
+</script>
+
+</body>
 </html>
